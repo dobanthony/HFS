@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('number')->nullable();
             $table->date('birthday')->nullable();
-            $table->integer('age')->nullable();
             $table->string('blood_type')->nullable();
 
             // Breeze defaults
