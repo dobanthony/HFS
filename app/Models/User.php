@@ -26,6 +26,7 @@ class User extends Authenticatable
         'blood_type',
         'email',
         'password',
+        'role', // Added role field
     ];
 
     /**
@@ -56,7 +57,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'birthday' => 'date', // Keep as date for Carbon support
+        'role' => 'string',
     ];
+
+    /**
+     * Boot method to set default values.
+     */
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->role)) {
+                $user->role = 'user'; // Default role
+            }
+        });
+    }
 
     /**
      * Ensure birthday is returned as YYYY-MM-DD for front-end forms.
@@ -80,5 +94,23 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return trim("{$this->first_name} {$this->middle_name} {$this->last_name}");
+    }
+
+    /**
+     * Role check helpers.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->role === 'agent';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }
