@@ -48,16 +48,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Attribute casting.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'birthday' => 'date', // Keep as date for Carbon support
+    ];
+
+    /**
+     * Ensure birthday is returned as YYYY-MM-DD for front-end forms.
+     */
+    public function getBirthdayAttribute($value)
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 
     /**
@@ -65,9 +71,7 @@ class User extends Authenticatable
      */
     public function getAgeAttribute(): ?int
     {
-        return $this->birthday
-            ? Carbon::parse($this->birthday)->age
-            : null;
+        return $this->birthday ? Carbon::parse($this->birthday)->age : null;
     }
 
     /**

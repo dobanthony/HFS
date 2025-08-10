@@ -33,6 +33,7 @@ class ProfileController extends Controller
         // Only fill the allowed fields
         $request->user()->fill($request->only([
             'first_name',
+            'middle_name',
             'last_name',
             'address',
             'number',
