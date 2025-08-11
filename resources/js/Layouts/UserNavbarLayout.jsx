@@ -32,7 +32,7 @@ export default function NavbarLayout({ children }) {
     { href: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
     { href: '/profile', icon: 'bi-person', label: 'Profile' },
     { href: '/settings', icon: 'bi-gear', label: 'Settings' },
-    { href: '/agent/property', icon: 'bi-house', label: 'Property' },
+    { href: route('user.properties.index'), icon: 'bi-card-list', label: 'Properties' },
   ];
 
   return (

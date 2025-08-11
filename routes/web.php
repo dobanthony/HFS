@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Agent\PropertyController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -25,11 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-use App\Http\Controllers\Agent\PropertyController;
-
 Route::resource('properties', PropertyController::class);
 
 Route::get('/agent/property', [PropertyController::class, 'index'])->name('agent.property');
+
+
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/properties', [\App\Http\Controllers\User\PropertyController::class, 'index'])->name('properties.index');
+    Route::get('/properties/{property}', [\App\Http\Controllers\User\PropertyController::class, 'show'])->name('properties.show');
+});
 
 
 require __DIR__.'/auth.php';
