@@ -38,54 +38,78 @@ export default function Index({ properties = [] }) {
                   <th scope="col">Bedrooms</th>
                   <th scope="col">Bathrooms</th>
                   <th scope="col">Area (sqm)</th>
+                  <th scope="col">Purchase Status</th>
                   <th scope="col" className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {properties.map((property) => (
-                  <tr key={property.id} className="align-middle">
-                    {/* Property Image */}
-                    <td style={{ minWidth: '120px' }}>
-                      {property.image ? (
-                        <img
-                          src={property.image}
-                          alt={property.title || 'Property'}
-                          className="img-thumbnail"
-                          style={{ maxWidth: '100px', height: 'auto' }}
-                        />
-                      ) : (
-                        <span className="text-muted">No Image</span>
-                      )}
-                    </td>
+                {properties.map((property) => {
+                  const isSold = !!property.purchase;
+                  const buyerName = isSold ? property.purchase.user.name : null;
 
-                    {/* Property Info */}
-                    <td className="fw-semibold">{property.title || '-'}</td>
-                    <td className="text-muted">{property.address || '-'}</td>
-                    <td className="text-success fw-bold">
-                      {property.price ? `₱${property.price.toLocaleString()}` : '-'}
-                    </td>
-                    <td>{property.bedrooms ?? '-'}</td>
-                    <td>{property.bathrooms ?? '-'}</td>
-                    <td>{property.area ?? '-'}</td>
+                  return (
+                    <tr
+                      key={property.id}
+                      className={`align-middle ${isSold ? 'table-danger' : ''}`}
+                    >
+                      {/* Property Image */}
+                      <td style={{ minWidth: '120px' }}>
+                        {property.image ? (
+                          <img
+                            src={property.image}
+                            alt={property.title || 'Property'}
+                            className="img-thumbnail"
+                            style={{ maxWidth: '100px', height: 'auto' }}
+                          />
+                        ) : (
+                          <span className="text-muted">No Image</span>
+                        )}
+                      </td>
 
-                    {/* Actions */}
-                    <td className="text-center" style={{ minWidth: '160px' }}>
-                      <Link
-                        href={property.edit_url}
-                        className="btn btn-sm btn-warning me-2 shadow-sm"
-                      >
-                        <i className="bi bi-pencil-square"></i> Edit
-                      </Link>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger shadow-sm"
-                        onClick={() => handleDelete(property.delete_url)}
-                      >
-                        <i className="bi bi-trash"></i> Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      {/* Property Info */}
+                      <td className="fw-semibold">{property.title || '-'}</td>
+                      <td className="text-muted">{property.address || '-'}</td>
+                      <td className="text-success fw-bold">
+                        {property.price ? `₱${property.price.toLocaleString()}` : '-'}
+                      </td>
+                      <td>{property.bedrooms ?? '-'}</td>
+                      <td>{property.bathrooms ?? '-'}</td>
+                      <td>{property.area ?? '-'}</td>
+
+                      {/* Purchase Status */}
+                      <td>
+                        {isSold ? (
+                          <span className="badge bg-danger">
+                            Sold to {buyerName}
+                          </span>
+                        ) : (
+                          <span className="badge bg-success">Available</span>
+                        )}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="text-center" style={{ minWidth: '160px' }}>
+                        {!isSold && (
+                          <>
+                            <Link
+                              href={property.edit_url}
+                              className="btn btn-sm btn-warning me-2 shadow-sm"
+                            >
+                              <i className="bi bi-pencil-square"></i> Edit
+                            </Link>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-danger shadow-sm"
+                              onClick={() => handleDelete(property.delete_url)}
+                            >
+                              <i className="bi bi-trash"></i> Delete
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

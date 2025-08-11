@@ -1,8 +1,26 @@
-import React from 'react';
-import { Link } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Link, router } from '@inertiajs/react';
 import UserNavbarLayout from '@/Layouts/UserNavbarLayout';
+import PurchaseModal from '@/Components/PurchaseModal';
 
 export default function Show({ property }) {
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
+  const [processing, setProcessing] = useState(false);
+
+  function handlePurchase(formData) {
+    setProcessing(true);
+    router.post(route('user.properties.purchase', property.id), formData, {
+      onSuccess: () => {
+        setProcessing(false);
+        setShowPurchaseForm(false);
+        alert('Purchase request submitted successfully!');
+      },
+      onError: () => {
+        setProcessing(false);
+      },
+    });
+  }
+
   return (
     <UserNavbarLayout>
       <div className="container py-4">
@@ -71,30 +89,29 @@ export default function Show({ property }) {
               Listed on {property.created_at}
             </p>
 
-            {/* Contact Button */}
-            <button className="btn btn-primary mt-3 w-100 rounded-pill shadow-sm">
+            {/* Contact Agent Button */}
+            <button className="btn btn-primary mt-3 w-100 rounded-pill shadow-sm mb-2">
               Contact Agent
+            </button>
+
+            {/* Purchase Button */}
+            <button
+              className="btn btn-outline-success w-100 rounded-pill"
+              onClick={() => setShowPurchaseForm(true)}
+            >
+              Purchase Property
             </button>
           </div>
         </div>
       </div>
 
-      {/* Styles */}
-      <style>{`
-        .property-img {
-          transition: transform 0.4s ease;
-        }
-        .property-img:hover {
-          transform: scale(1.03);
-        }
-        @media (max-width: 576px) {
-          .btn.btn-primary {
-            position: sticky;
-            bottom: 0;
-            z-index: 10;
-          }
-        }
-      `}</style>
+      {/* Purchase Modal */}
+      <PurchaseModal
+        show={showPurchaseForm}
+        onClose={() => setShowPurchaseForm(false)}
+        onSubmit={handlePurchase}
+        processing={processing}
+      />
     </UserNavbarLayout>
   );
 }
