@@ -40,8 +40,6 @@ export default function NavbarLayout({ children }) {
     { href: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
     { href: '/profile', icon: 'bi-person', label: 'Profile' },
     { href: '/settings', icon: 'bi-gear', label: 'Settings' },
-    { href: '/agent/properties', icon: 'bi-building', label: 'My Properties' },
-    { href: '/agent/properties/create', icon: 'bi-plus-square', label: 'Add Property' },
   ];
 
   return (
