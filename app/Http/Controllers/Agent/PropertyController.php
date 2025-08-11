@@ -23,9 +23,9 @@ class PropertyController extends Controller
                 'bathrooms'   => $property->bathrooms ?? 0,
                 'area'        => $property->area ?? 0,
                 'image'       => $property->image ? asset('storage/' . $property->image) : null,
+                'status'      => $property->status ?? 'available', // ✅ added status
                 'created_at'  => $property->created_at?->format('Y-m-d H:i:s'),
                 'updated_at'  => $property->updated_at?->format('Y-m-d H:i:s'),
-                // Added edit & delete URLs
                 'edit_url'    => route('properties.edit', $property->id),
                 'delete_url'  => route('properties.destroy', $property->id),
             ];
@@ -51,7 +51,8 @@ class PropertyController extends Controller
             'bedrooms'    => 'nullable|integer',
             'bathrooms'   => 'nullable|integer',
             'area'        => 'nullable|numeric',
-            'image'       => 'nullable|image|max:10240', // max 10MB
+            'image'       => 'nullable|image|max:10240',
+            'status'      => 'required|string|in:available,sold', // ✅ validate status
         ]);
 
         if ($request->hasFile('image')) {
@@ -81,7 +82,8 @@ class PropertyController extends Controller
             'bedrooms'    => 'nullable|integer',
             'bathrooms'   => 'nullable|integer',
             'area'        => 'nullable|numeric',
-            'image'       => 'nullable|image|max:10240', // max 10MB
+            'image'       => 'nullable|image|max:10240',
+            'status'      => 'required|string|in:available,sold', // ✅ validate status
         ]);
 
         if ($request->hasFile('image')) {

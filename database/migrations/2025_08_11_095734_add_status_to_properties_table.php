@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            //
+            $table->enum('status', ['available', 'sold', 'reserved'])->default('available')->after('image');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            //
+            $table->dropColumn('status');
         });
     }
 };

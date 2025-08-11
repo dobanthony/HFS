@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use App\Models\Purchase;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PropertyController extends Controller
@@ -48,5 +50,23 @@ class PropertyController extends Controller
             'property' => $data,
         ]);
     }
-}
 
+    public function purchase(Property $property)
+    {
+        $user = Auth::user();
+
+        // Check if already purchased
+        if (Purchase::where('user_id', $user->id)->where('property_id', $property->id)->exists()) {
+            return redirect()->back()->with('error', 'You already purchased this property.');
+        }
+
+        Purchase::create([
+            'user_id' => $user->id,
+            'property_id' => $property->id,
+            'purchased_at' => now(),
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('user.properties.index')->with('success', 'Property purchase request submitted!');
+    }
+}

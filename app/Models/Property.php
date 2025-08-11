@@ -16,5 +16,6 @@ class Property extends Model
         'bathrooms',
         'area',
         'image',
+        'status',
     ];
 }
