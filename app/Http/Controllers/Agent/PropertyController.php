@@ -23,11 +23,12 @@ class PropertyController extends Controller
                 'bathrooms'   => $property->bathrooms ?? 0,
                 'area'        => $property->area ?? 0,
                 'image'       => $property->image ? asset('storage/' . $property->image) : null,
-                'status'      => $property->status ?? 'available', // ✅ added status
+                'status'      => $property->status ?? 'available',
                 'created_at'  => $property->created_at?->format('Y-m-d H:i:s'),
                 'updated_at'  => $property->updated_at?->format('Y-m-d H:i:s'),
                 'edit_url'    => route('properties.edit', $property->id),
                 'delete_url'  => route('properties.destroy', $property->id),
+                'mark_sold_url' => route('agent.properties.markSold', $property->id), // ✅ new
             ];
         });
 
@@ -52,7 +53,7 @@ class PropertyController extends Controller
             'bathrooms'   => 'nullable|integer',
             'area'        => 'nullable|numeric',
             'image'       => 'nullable|image|max:10240',
-            'status'      => 'required|string|in:available,sold', // ✅ validate status
+            'status'      => 'required|string|in:available,sold',
         ]);
 
         if ($request->hasFile('image')) {
@@ -83,7 +84,7 @@ class PropertyController extends Controller
             'bathrooms'   => 'nullable|integer',
             'area'        => 'nullable|numeric',
             'image'       => 'nullable|image|max:10240',
-            'status'      => 'required|string|in:available,sold', // ✅ validate status
+            'status'      => 'required|string|in:available,sold',
         ]);
 
         if ($request->hasFile('image')) {
@@ -109,5 +110,21 @@ class PropertyController extends Controller
 
         return redirect()->route('properties.index')
             ->with('success', 'Property deleted successfully.');
+    }
+
+    /**
+     * ✅ Mark property as sold when buyer purchases (no payment).
+     */
+    public function markSold(Property $property)
+    {
+        if ($property->status === 'sold') {
+            return back()->with('error', 'This property is already sold.');
+        }
+
+        $property->update([
+            'status' => 'sold',
+        ]);
+
+        return back()->with('success', 'Property marked as sold.');
     }
 }

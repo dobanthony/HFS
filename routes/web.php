@@ -1,40 +1,45 @@
 <?php
 
-use App\Http\Controllers\Agent\PropertyController;
-use App\Http\Controllers\UserRoleController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\Agent\PropertyController as AgentPropertyController;
+use App\Http\Controllers\User\PropertyController as UserPropertyController;
+use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\ProfileController;
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
+        'canLogin'       => Route::has('login'),
+        'canRegister'    => Route::has('register'),
         'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'phpVersion'     => PHP_VERSION,
     ]);
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Role-based dashboard
-    Route::get('/dashboard', [UserRoleController::class, 'redirectToDashboard'])->name('dashboard');
 
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Dashboard (Role-based redirection)
+    Route::get('/dashboard', [UserRoleController::class, 'redirectToDashboard'])
+        ->name('dashboard');
+
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('agent')->name('agent.')->group(function () {
+        Route::resource('properties', AgentPropertyController::class);
+    });
+
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('properties', [UserPropertyController::class, 'index'])->name('properties.index');
+        Route::get('properties/{property}', [UserPropertyController::class, 'show'])->name('properties.show');
+        Route::post('properties/{property}/purchase', [UserPropertyController::class, 'purchase'])->name('properties.purchase');
+    });
 });
 
-Route::resource('properties', PropertyController::class);
-
-Route::get('/agent/property', [PropertyController::class, 'index'])->name('agent.property');
-
-
-Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/properties', [\App\Http\Controllers\User\PropertyController::class, 'index'])->name('properties.index');
-    Route::get('/properties/{property}', [\App\Http\Controllers\User\PropertyController::class, 'show'])->name('properties.show');
-});
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
