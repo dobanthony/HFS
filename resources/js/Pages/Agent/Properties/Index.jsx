@@ -16,61 +16,72 @@ export default function Index({ properties = [] }) {
 
   return (
     <AgentNavbarLayout>
-      <div className="container mt-5">
-        <h1 className="mb-4">Properties</h1>
-        <Link href="/properties/create" className="btn btn-primary mb-3">
-          Add New Property
-        </Link>
+      <div className="container py-4">
+        {/* Page Header */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h1 className="fw-bold text-primary m-0">Properties</h1>
+          <Link href="/properties/create" className="btn btn-primary shadow-sm">
+            <i className="bi bi-plus-lg me-2"></i> Add New Property
+          </Link>
+        </div>
 
+        {/* Property Table */}
         {properties.length > 0 ? (
-          <div className="table-responsive">
-            <table className="table table-striped align-middle">
-              <thead className="table-dark">
+          <div className="table-responsive shadow-sm rounded">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-primary">
                 <tr>
-                  <th>Image</th>
-                  <th>Title</th>
-                  <th>Address</th>
-                  <th>Price</th>
-                  <th>Bedrooms</th>
-                  <th>Bathrooms</th>
-                  <th>Area (sqm)</th>
-                  <th className="text-center">Actions</th>
+                  <th scope="col">Image</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Bedrooms</th>
+                  <th scope="col">Bathrooms</th>
+                  <th scope="col">Area (sqm)</th>
+                  <th scope="col" className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {properties.map((property) => (
-                  <tr key={property.id}>
+                  <tr key={property.id} className="align-middle">
+                    {/* Property Image */}
                     <td style={{ minWidth: '120px' }}>
                       {property.image ? (
                         <img
                           src={property.image}
                           alt={property.title || 'Property'}
-                          className="img-fluid rounded"
+                          className="img-thumbnail"
                           style={{ maxWidth: '100px', height: 'auto' }}
                         />
                       ) : (
-                        'No Image'
+                        <span className="text-muted">No Image</span>
                       )}
                     </td>
-                    <td>{property.title || '-'}</td>
-                    <td>{property.address || '-'}</td>
-                    <td>₱{property.price?.toLocaleString() ?? '-'}</td>
+
+                    {/* Property Info */}
+                    <td className="fw-semibold">{property.title || '-'}</td>
+                    <td className="text-muted">{property.address || '-'}</td>
+                    <td className="text-success fw-bold">
+                      {property.price ? `₱${property.price.toLocaleString()}` : '-'}
+                    </td>
                     <td>{property.bedrooms ?? '-'}</td>
                     <td>{property.bathrooms ?? '-'}</td>
                     <td>{property.area ?? '-'}</td>
+
+                    {/* Actions */}
                     <td className="text-center" style={{ minWidth: '160px' }}>
                       <Link
                         href={property.edit_url}
-                        className="btn btn-sm btn-warning me-2"
+                        className="btn btn-sm btn-warning me-2 shadow-sm"
                       >
-                        Edit
+                        <i className="bi bi-pencil-square"></i> Edit
                       </Link>
                       <button
                         type="button"
-                        className="btn btn-sm btn-danger"
+                        className="btn btn-sm btn-danger shadow-sm"
                         onClick={() => handleDelete(property.delete_url)}
                       >
-                        Delete
+                        <i className="bi bi-trash"></i> Delete
                       </button>
                     </td>
                   </tr>
@@ -79,7 +90,13 @@ export default function Index({ properties = [] }) {
             </table>
           </div>
         ) : (
-          <p>No properties found.</p>
+          <div className="text-center py-5 text-muted">
+            <i className="bi bi-house-door fs-1"></i>
+            <p className="mt-3">No properties found.</p>
+            <Link href="/properties/create" className="btn btn-outline-primary">
+              <i className="bi bi-plus-lg me-2"></i> Add your first property
+            </Link>
+          </div>
         )}
       </div>
     </AgentNavbarLayout>
