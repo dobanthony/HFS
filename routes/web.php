@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -24,5 +25,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // Agent routes to manage their properties
+    Route::get('/agent/properties', [PropertyController::class, 'agentIndex'])->name('agent.properties.index');
+    Route::get('/agent/properties/create', [PropertyController::class, 'create'])->name('agent.properties.create');
+    Route::post('/agent/properties', [PropertyController::class, 'store'])->name('agent.properties.store');
+});
+
+// Public routes for buyers to view properties
+Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
+Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+
 
 require __DIR__.'/auth.php';
