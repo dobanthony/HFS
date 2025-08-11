@@ -25,6 +25,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+use App\Http\Controllers\Agent\PropertyController;
+
+Route::resource('properties', PropertyController::class);
+
+Route::get('/agent/property', [PropertyController::class, 'index'])->name('agent.property');
 
 
 require __DIR__.'/auth.php';
